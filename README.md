@@ -2,7 +2,7 @@
 
 ## Warning
 * This is under PoC phase, don't treat code as final. Java API interface may change completely.
-* Currently a test util `ConfigUtils` is written to test the e-2-e working. It needs at least 4 VM parameter:   
+* Currently a test util `ConfigUtils` is written to test the e-2-e secret engine `get, add & update` key-value pair. It needs at least 4 VM parameter:   
   * VAULT_BASE_URL (e.g. https://localhost:8200),
   * VAULT_AUTH_PATH (e.g. auth or your own defined path),
   * VAULT_USR (username for authentication)
