@@ -10,9 +10,7 @@ import uk.co.secsoft.vault.client.utils.HttpGateway;
 import uk.co.secsoft.vault.domain.config.VaultConfiguration;
 import uk.co.secsoft.vault.domain.engine.secret.SecretStore;
 import uk.co.secsoft.vault.domain.token.Token;
-import uk.co.secsoft.vault.usecase.utils.CommonUtils;
-import uk.co.secsoft.vault.usecase.utils.EncryptedTokenSerializer;
-import uk.co.secsoft.vault.usecase.utils.SimpleAESUtils;
+import uk.co.secsoft.vault.usecase.utils.*;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -21,6 +19,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 
 import static uk.co.secsoft.vault.usecase.utils.VaultConfigUtils.getVaultConfig;
 
@@ -52,7 +51,7 @@ public class GetSecretJson {
   public void startReadingSecretStoreFromJsonFile() {
     Token vaultToken = CommonUtils.getVaultToken(vaultConfig, httpGateway);
     KVFacade kvFacade = new KVFacade(new KVStoreService(vaultConfig, httpGateway));
-    try(FileInputStream inputStream = new FileInputStream("secrets-rps-stage.json")) {
+    try(FileInputStream inputStream = new FileInputStream("2020-07-08-150132 95-secrets-rps-stage.json")) {
       SecretStore secretStore = getObjectMapper().readValue(inputStream, SecretStore.class);
       System.out.println("file reading finished");
     } catch (IOException e) {
@@ -85,6 +84,7 @@ public class GetSecretJson {
     ObjectMapper objectMapper = new ObjectMapper();
     SimpleModule module = new SimpleModule();
     module.addSerializer(Token.class, new EncryptedTokenSerializer(mySuperSecret));
+    module.addDeserializer(Map.class, new EncryptedTokenMapDeserializer(mySuperSecret));
     objectMapper.registerModule(module);
     return objectMapper;
   }

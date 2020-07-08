@@ -2,6 +2,7 @@ package uk.co.secsoft.vault.domain.engine.secret;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import uk.co.secsoft.vault.domain.token.Token;
 
 import java.util.*;
@@ -12,13 +13,10 @@ public class SecretStore {
   private List<SecretStore> stores = new ArrayList<>();
   private Map<String, Token> data = new LinkedHashMap<>();
 
+  private Map<String, String> dataString;
+
   @JsonAnySetter
   public void setDataValue(String key, String value) {
-    data.put(key, new Token(value));
-  }
-
-  @JsonAnyGetter
-  public void getDataValue(String key, String value) {
     data.put(key, new Token(value));
   }
 
