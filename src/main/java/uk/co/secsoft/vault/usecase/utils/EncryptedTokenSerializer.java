@@ -7,10 +7,10 @@ import uk.co.secsoft.vault.domain.token.Token;
 
 import java.io.IOException;
 
-public class TokenSerializer extends JsonSerializer<Token> {
+public class EncryptedTokenSerializer extends JsonSerializer<Token> {
   private final SimpleAESUtils simpleAESUtils;
 
-  public TokenSerializer(SimpleAESUtils simpleAESUtils) {
+  public EncryptedTokenSerializer(SimpleAESUtils simpleAESUtils) {
     this.simpleAESUtils = simpleAESUtils;
   }
 

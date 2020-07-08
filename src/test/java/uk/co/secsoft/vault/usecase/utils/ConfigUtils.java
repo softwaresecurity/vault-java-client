@@ -66,7 +66,7 @@ public class ConfigUtils {
 
   private SecretStore getSecretStore(String secretPath, Token token) {
     KVFacade kvFacade = new KVFacade(new KVStoreService(vaultConfig, httpGateway));
-    return kvFacade.getStore(secretPath, token);
+    return kvFacade.getSecretStore(secretPath, token);
   }
 
   private AuthToken getAuthToken() {

@@ -13,20 +13,8 @@ public class KVFacade {
     this.kvStoreService = kvStoreService;
   }
 
-  public List<String> listStoresPath(String rootLocation, Token vaultToken) {
-    return kvStoreService.listStoresPath(rootLocation, vaultToken);
-  }
-
-  public SecretStore getStore(String path, Token vaultToken) {
-    return kvStoreService.getStore(path, vaultToken);
-  }
-
-  public Token getToken(String path, String key, Token vaultToken) {
-    SecretStore secretStore = getStore(path, vaultToken);
-    if (secretStore.getData() != null && secretStore.getData().containsKey(key)) {
-      return secretStore.getData().get(key);
-    }
-    return null;
+  public SecretStore getSecretStore(String path, Token vaultToken) {
+    return kvStoreService.getSecretStore(path, vaultToken);
   }
 
   public void createStore(String path, SecretStore secretStore, Token vaultToken) {

@@ -1,16 +1,10 @@
 package uk.co.secsoft.vault.usecase.utils;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import uk.co.secsoft.vault.client.auth.AuthFacade;
 import uk.co.secsoft.vault.client.utils.HttpGateway;
 import uk.co.secsoft.vault.domain.config.VaultConfiguration;
 import uk.co.secsoft.vault.domain.token.Token;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import static uk.co.secsoft.vault.usecase.utils.VaultConfigUtils.VAULT_TOKEN_KEY;
 
