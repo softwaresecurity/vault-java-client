@@ -1,4 +1,4 @@
-package uk.co.secsoft.utils;
+package uk.co.secsoft.vault.usecase.utils;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -6,8 +6,6 @@ import uk.co.secsoft.vault.client.auth.AuthFacade;
 import uk.co.secsoft.vault.client.engine.secret.KVFacade;
 import uk.co.secsoft.vault.client.engine.secret.kv1.KVStoreService;
 import uk.co.secsoft.vault.client.utils.HttpGateway;
-import uk.co.secsoft.vault.domain.auth.method.AuthModel;
-import uk.co.secsoft.vault.domain.auth.method.LdapUserPass;
 import uk.co.secsoft.vault.domain.auth.response.AuthToken;
 import uk.co.secsoft.vault.domain.config.VaultConfiguration;
 import uk.co.secsoft.vault.domain.engine.secret.SecretStore;
@@ -15,7 +13,12 @@ import uk.co.secsoft.vault.domain.token.Token;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static uk.co.secsoft.vault.usecase.utils.VaultConfigUtils.getVaultConfig;
 
 /**
  *
@@ -37,7 +40,7 @@ public class ConfigUtils {
     List<String> todoList = configUtils.readConfig();
 
     todoList.forEach(actions-> {
-      Map<String, String> secretStoreMap = new HashMap<>();
+      Map<String, Token> secretStoreMap = new HashMap<>();
       String[] actionsToken = StringUtils.split(actions, ",");
       String keyName = actionsToken[1];
       String secretPath = System.getProperty("SECRETS_ROOT")+ actionsToken[2];
@@ -49,8 +52,8 @@ public class ConfigUtils {
       if (secretStore != null && secretStore.getData() != null) {
         secretStoreMap.putAll(secretStore.getData());
       }
-      secretStoreMap.put(keyName, ApiKeyGenerator.generateKey(keyLength));
-      configUtils.updateStore(secretPath, new SecretStore(secretStoreMap), token);
+      secretStoreMap.put(keyName, new Token(ApiKeyGenerator.generateKey(keyLength)));
+      //configUtils.updateStore(secretPath, new SecretStore(secretStoreMap), token);
 
     });
     System.out.println("done!!!");
@@ -68,7 +71,7 @@ public class ConfigUtils {
 
   private AuthToken getAuthToken() {
     AuthFacade authFacade = new AuthFacade(vaultConfig, httpGateway);
-    return authFacade.login(getLDAPAuth());
+    return authFacade.login(VaultConfigUtils.getLDAPAuth());
   }
 
   private List<String> readConfig() {
@@ -80,16 +83,5 @@ public class ConfigUtils {
       e.printStackTrace();
     }
     return new ArrayList<>();
-  }
-
-  private static VaultConfiguration getVaultConfig() {
-    return new VaultConfiguration(
-        System.getProperty("VAULT_BASE_URL"),
-        null,
-        null);
-  }
-
-  private static AuthModel getLDAPAuth() {
-    return new LdapUserPass(System.getProperty("VAULT_AUTH_PATH"), System.getProperty("VAULT_USR"), System.getProperty("VAULT_PWD"));
   }
 }

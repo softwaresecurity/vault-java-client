@@ -35,7 +35,7 @@ public class LdapAuthenticator implements Authenticator {
     httpPost.setEntity(stringEntity);
 
     try {
-      HttpResponse response = httpGateway.getHttpClient().execute(httpPost);
+      HttpResponse response = httpGateway.getClient().execute(httpPost);
 
       ObjectMapper objectMapper = new ObjectMapper();
       JsonNode authResponse = objectMapper.readTree(response.getEntity().getContent());

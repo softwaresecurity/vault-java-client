@@ -1,4 +1,4 @@
-package uk.co.secsoft.utils;
+package uk.co.secsoft.vault.usecase.utils;
 
 
 import org.apache.commons.lang3.RandomStringUtils;

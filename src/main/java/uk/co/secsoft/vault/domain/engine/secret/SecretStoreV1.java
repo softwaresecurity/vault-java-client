@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class SecretStore {
+public class SecretStoreV1 {
   private Map<String, Token> data = new LinkedHashMap<>();
 
   @JsonAnySetter
@@ -15,6 +15,7 @@ public class SecretStore {
     data.put(key, new Token(value));
   }
 
+  //TODO Change
   public Map<String, Token> getData() {
     return data == null ? null : Collections.unmodifiableMap(data);
   }

@@ -10,6 +10,8 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.ssl.SSLContexts;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import uk.co.secsoft.vault.domain.config.KeyStore;
 
 import javax.net.ssl.SSLContext;
@@ -19,33 +21,45 @@ import java.security.NoSuchAlgorithmException;
 
 
 public class HttpGateway {
-  private final KeyStore trustStore;
+  private static final Logger LOGGER = LoggerFactory.getLogger(HttpGateway.class);
 
-  public HttpGateway(KeyStore trustStore) {
-    this.trustStore = trustStore;
+  private final HttpClient httpClient;
+
+  /**
+   * Use this constructor to create client.
+   * If Trust store and keystore is null then Http client will trusts all certificates including self signed one.
+   * TBD. If Trust store if not empty then http client will trus only trust store certs.
+   * TBD. To enable mutual authentication, keystore and truststore values must be passed
+   * @return http client which trust all certificates.
+   */
+  public HttpGateway(KeyStore keyStore, KeyStore trustStore) {
+    this.httpClient = initClient(keyStore, trustStore);
   }
 
-  public HttpClient getHttpClient() {
+  public HttpGateway(HttpClient httpClient) {
+    this.httpClient = httpClient;
+  }
+
+  public HttpClient getClient() {
+    return httpClient;
+  }
+
+  private HttpClient initClient(KeyStore keyStore, KeyStore trustStore) {
+    return initClient();
+  }
+
+  private HttpClient initClient() {
     SSLContext sslContext = null;
     try {
       sslContext = SSLContexts.custom()
           .loadTrustMaterial(new TrustSelfSignedStrategy())
           .build();
-    } catch (NoSuchAlgorithmException e) {
-      e.printStackTrace();
-    } catch (KeyManagementException e) {
-      e.printStackTrace();
-    } catch (KeyStoreException e) {
-      e.printStackTrace();
     }
-    SSLConnectionSocketFactory socketFactory =
-        new SSLConnectionSocketFactory(sslContext);
-    Registry<ConnectionSocketFactory> reg =
-        RegistryBuilder.<ConnectionSocketFactory>create()
-            .register("https", socketFactory)
-            .build();
-
-
+    catch (NoSuchAlgorithmException | KeyManagementException | KeyStoreException e) {
+      LOGGER.error("Error in creating SSL context to trust all certificates.");
+    }
+    SSLConnectionSocketFactory socketFactory = new SSLConnectionSocketFactory(sslContext);
+    Registry<ConnectionSocketFactory> reg = RegistryBuilder.<ConnectionSocketFactory>create().register("https", socketFactory).build();
 
     PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager(reg);
     connectionManager.setMaxTotal(200);
