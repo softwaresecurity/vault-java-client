@@ -20,7 +20,7 @@
     <cucumber.version>4.7.2</cucumber.version>
     <wiremock.version>2.24.1</wiremock.version>
     <mockito.version>3.0.0</mockito.version>
-    <commons-io.version>2.6</commons-io.version>
+    <commons-io.version>2.7</commons-io.version>
     <lombok.version>1.18.10</lombok.version>
     <commons-lang3.version>3.9</commons-lang3.version>
     <logback-classic.version>1.2.3</logback-classic.version>
